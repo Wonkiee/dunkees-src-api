@@ -10,10 +10,10 @@ var http = require('http');
 
 const safeJsonStringify = require('safe-json-stringify');
 
-const loggerEnums = require('../app/utils/enums/loggerEnums');
+const constants = require('../app/utils/constants');
 const serviceInitiallier = require('../serviceInitiallizer');
 const loggerModule = require('../app/utils/logger');
-const logger = new loggerModule().getLogger(loggerEnums.SERVICE.WWW);
+const logger = new loggerModule().getLogger(constants.LOGGER_MODULE.SERVICE.WWW);
 /**
  * Get port from environment and store in Express.
  */

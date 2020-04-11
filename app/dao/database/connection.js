@@ -9,9 +9,9 @@ const mongoose =  require('mongoose');
 
 const config = require('../../configurations');
 const dbConnectionStr = config.db.connection;
-const loggerEnums = require('../../utils/enums/loggerEnums');
+const constants = require('../../utils/constants');
 const loggerModule = require('../../utils/logger');
-const logger = new loggerModule().getLogger(loggerEnums.SERVICE.SERVICE_INITIALLIZER);
+const logger = new loggerModule().getLogger(constants.LOGGER_MODULE.SERVICE.SERVICE_INITIALLIZER);
 
 //require('../models/category');
 

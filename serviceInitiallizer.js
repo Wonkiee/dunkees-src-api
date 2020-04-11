@@ -7,9 +7,9 @@
 
 const safeJsonStringify = require('safe-json-stringify');
 
-const loggerEnums = require('./app/utils/enums/loggerEnums');
+const constants = require('./app/utils/constants');
 const loggerModule = require('./app/utils/logger');
-const logger = new loggerModule().getLogger(loggerEnums.SERVICE.SERVICE_INITIALLIZER);
+const logger = new loggerModule().getLogger(constants.LOGGER_MODULE.SERVICE.SERVICE_INITIALLIZER);
 const mongoDbManager = require('./app/dao/database/connection');
 
 class ServiceInitiallizer {
