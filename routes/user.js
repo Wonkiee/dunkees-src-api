@@ -5,9 +5,8 @@
  * @modify date 2020-04-12 02:30:03
  * @desc [User route - All the processes related to users will be handled through this route]
  */
-
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 const constants = require('../app/utils/constants');
 const userService = require('../app/services/userService');
@@ -19,47 +18,47 @@ const errorResponseHanlder = require('../app/utils/errorResponseHandler');
  */
 router.post('/create', (req, res) => {
 
-  return userService.createUser(req.body, (locErr, json) => {
+  return userService.createUser(req.body, (locErr, userCreateRes) => {
     if (locErr) {
       return errorResponseHanlder.handleErrorResponse(res, locErr);
     }
-    return res.send(constants.RESPONSE_CODES.SUCCESS);
+    return res.json(userCreateRes);
   })
 });
 
 /**
  * Get user by email
  */
-router.get('/get-user/:email', (req, res) => {
+router.get('/get-user-via-email/:email', (req, res) => {
 
   const hasError = fieldValidator.emptyParamsValidation(req, res, 'email');
   if (hasError) {
     return hasError
   }
 
-  return userService.retrieveUserByEmail({email: req.params.email}, (locErr, json) => {
+  return userService.retrieveUserByEmail({ email: req.params.email }, (locErr, json) => {
     if (locErr) {
       return errorResponseHanlder.handleErrorResponse(res, locErr);
     }
-    return res.send(constants.RESPONSE_CODES.SUCCESS);
+    return res.json(json);
   })
 });
 
 /**
  * Get user by phone
  */
-router.get('/get-user/:phone', (req, res) => {
+router.get('/get-user-via-phone/:phone', (req, res) => {
 
   const hasError = fieldValidator.emptyParamsValidation(req, res, 'phone');
   if (hasError) {
     return hasError
   }
 
-  return userService.retrieveUserByPhoneNumber({phone: req.params.phone}, (locErr, json) => {
+  return userService.retrieveUserByPhoneNumber({ phoneNumber: req.params.phone }, (locErr, user) => {
     if (locErr) {
       return errorResponseHanlder.handleErrorResponse(res, locErr);
     }
-    return res.send(constants.RESPONSE_CODES.SUCCESS);
+    return res.json(user);
   })
 });
 
@@ -68,11 +67,11 @@ router.get('/get-user/:phone', (req, res) => {
  */
 router.patch('/update-user/', (req, res) => {
 
-  return userService.updateUserDetailsByEmail(req.body, (locErr, json) => {
+  return userService.updateUserDetailsByEmail(req.body, (locErr, userUpdateByMailRes) => {
     if (locErr) {
       return errorResponseHanlder.handleErrorResponse(res, locErr);
     }
-    return res.sendStatus(constants.RESPONSE_CODES.SUCCESS);
+    return res.json(userUpdateByMailRes);
   })
 });
 
@@ -81,11 +80,11 @@ router.patch('/update-user/', (req, res) => {
  */
 router.patch('/update-user-email/', (req, res) => {
 
-  return userService.updateUserEmailByExisitingEmail(req.body, (locErr, json) => {
+  return userService.updateUserEmailByExisitingEmail(req.body, (locErr, userEmailUpdateRes) => {
     if (locErr) {
       return errorResponseHanlder.handleErrorResponse(res, locErr);
     }
-    return res.send(constants.RESPONSE_CODES.SUCCESS);
+    return res.json(userEmailUpdateRes);
   })
 });
 
@@ -94,11 +93,11 @@ router.patch('/update-user-email/', (req, res) => {
  */
 router.patch('/update-user-phone/', (req, res) => {
 
-  return userService.updateUserPhoneByEmail(req.body, (locErr, json) => {
+  return userService.updateUserPhoneByEmail(req.body, (locErr, userPhoneUpdateRes) => {
     if (locErr) {
       return errorResponseHanlder.handleErrorResponse(res, locErr);
     }
-    return res.send(constants.RESPONSE_CODES.SUCCESS);
+    return res.json(userPhoneUpdateRes);
   })
 });
 
@@ -107,11 +106,11 @@ router.patch('/update-user-phone/', (req, res) => {
  */
 router.delete('/delete-user/', (req, res) => {
 
-  return userService.deleteUserByEmail(req.body, (locErr, json) => {
+  return userService.deleteUserByEmail(req.body, (locErr, userDeleteRes) => {
     if (locErr) {
       return errorResponseHanlder.handleErrorResponse(res, locErr);
     }
-    return res.send(constants.RESPONSE_CODES.SUCCESS);
+    return res.json(userDeleteRes);
   })
 });
 

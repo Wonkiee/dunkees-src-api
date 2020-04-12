@@ -10,7 +10,7 @@
  * Load configurations based on environment configs
  */
 const configFilePath = "/etc/dunkees_conf/dunkees_api/";
-const configuration = function() {
+const configuration = function () {
     let config;
 
     try {

@@ -13,6 +13,7 @@ module.exports = {
             DB_CONNECTION: 'DATABASE CONNECTION',
             WWW: 'BIN/WWW',
             AUTH_SERVICE: 'AUTH SERVICE',
+            APP: 'APP',
             MODELS: {
                 USER: 'USER MODEL'
             },
@@ -26,7 +27,8 @@ module.exports = {
     },
     ERRORS: {
         REQUIRED_FIELDS_MISSING: 'REQUIRED_FIELDS_MISSING',
-        INCORRECT_CREDENTIALS: 'INCORRECT USER CREDENTIALS'
+        INCORRECT_CREDENTIALS: 'INCORRECT_USER_CREDENTIALS',
+        JWT_ERROR: 'JWT_TOKEN_ERROR'
     },
     RESPONSE_CODES: {
         SUCCESS: {
@@ -42,6 +44,8 @@ module.exports = {
             NOT_FOUND: 404,
             GONE: 410,
             INTERNAL_SERVER_ERROR: 500,
+            SERVICE_UNAVAILABLE: 503,
+
             //Custom Error Codes
             REQUIRED_FIELDS_MISSING: 100500,
             INCORRECT_CREDENTIALS: 100501,
@@ -55,5 +59,18 @@ module.exports = {
         AUTHORIZATION: {
             BEARER: 'Bearer'
         }
+    },
+    GUEST_USER: {
+        EMAIL: 'guestuser@dunkees.com'
+    },
+    CUSTOM_MESSEGES: {
+        AUTHENTICATION_SUCCESSFULL: 'Authentication successful!',
+        OK: 'OK',
+        SERVER_STATUS: {
+            RUNNING: 'RUNNING'
+        }
+    },
+    JWT: {
+        EXCLUDED_PATHS: ['/api/user/create', '/api/login', '/api/health-check']
     }
 }

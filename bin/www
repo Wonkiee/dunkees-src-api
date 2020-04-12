@@ -18,7 +18,7 @@ const logger = new loggerModule().getLogger(constants.LOGGER_MODULE.SERVICE.WWW)
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3201');
 app.set('port', port);
 
 /**
@@ -36,8 +36,8 @@ serviceInitiallier.initServices()
       logger.info(`Listening on port: ${port}.`);
     });
   }).catch((err) => {
-      logger.error(`Failure in initiating required services for application start : ${safeJsonStringify(err)}`);
-      process.exit(1);
+    logger.error(`Failure in initiating required services for application start : ${safeJsonStringify(err)}`);
+    process.exit(1);
   });
 
 /**

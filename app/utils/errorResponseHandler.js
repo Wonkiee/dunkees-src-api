@@ -25,10 +25,6 @@ class ErrorResponseHandler {
                     return res.sendStatus(constants.RESPONSE_CODES.ERROR.NOT_FOUND);
                 case constants.RESPONSE_CODES.ERROR.UNAUTHORISED:
                     return res.sendStatus(constants.RESPONSE_CODES.ERROR.UNAUTHORISED);
-                // case constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING:
-                //     return res.status(constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING).json({error: constants.ERRORS.REQUIRED_FIELDS_MISSING});
-                // case constants.RESPONSE_CODES.ERROR.INCORRECT_CREDENTIALS:
-                //     return res.status(constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING).json({error: constants.ERRORS.INCORRECT_CREDENTIALS});
                 default:
                     return res.sendStatus(constants.RESPONSE_CODES.ERROR.INTERNAL_SERVER_ERROR);
             }

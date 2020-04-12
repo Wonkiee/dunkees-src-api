@@ -3,7 +3,7 @@
  * @email [rajitharajasooriya@mail.com]
  * @create date 2020-04-11 23:43:26
  * @modify date 2020-04-11 23:43:26
- * @desc [Logic route]
+ * @desc [Login route]
  */
 
 const express = require('express');
@@ -20,7 +20,7 @@ const constants = require('../app/utils/constants');
 router.post('/', (req, res) => {
 
     const reqBody = req.body;
-    return userService.loginUser(reqBody, (err, json) => {
+    return userService.loginUser(reqBody, (err) => {
         if (err) {
             return errorResponseHandler.handleErrorResponse(res, err);
         }
@@ -28,12 +28,36 @@ router.post('/', (req, res) => {
         const jwtToken = authService.generateJWT(reqBody.email);
 
         if (!jwtToken) {
-            return res.sendStatus(constants.RESPONSE_CODES.ERROR.BAD_REQUEST);
+            return res.status(constants.RESPONSE_CODES.ERROR.UNAUTHORISED).json({ code: constants.ERRORS.JWT_ERROR });
         }
 
         return res.json({
             success: true,
-            message: 'Authentication successful!',
+            message: constants.CUSTOM_MESSEGES.AUTHENTICATION_SUCCESSFULL,
+            token: jwtToken
+        });
+    });
+});
+
+/**
+ * Login a guest user
+ */
+router.post('/guest-user', (req, res) => {
+
+    return userService.loginGuestUser(req.body, (err) => {
+        if (err) {
+            return errorResponseHandler.handleErrorResponse(res, err);
+        }
+
+        const jwtToken = authService.generateJWT(constants.GUEST_USER.EMAIL);
+
+        if (!jwtToken) {
+            return res.sendStatus(constants.RESPONSE_CODES.ERROR.UNAUTHORISED).json({ code: constants.ERRORS.JWT_ERROR });
+        }
+
+        return res.json({
+            success: true,
+            message: constants.CUSTOM_MESSEGES.AUTHENTICATION_SUCCESSFULL,
             token: jwtToken
         });
     });

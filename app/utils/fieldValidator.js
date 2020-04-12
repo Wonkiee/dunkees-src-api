@@ -34,19 +34,19 @@ class FieldValidator {
         let errors = req.validationErrors();
         if (errors) {
             return res.status(constants.RESPONSE_CODES.ERROR.BAD_REQUEST)
-              .json(JSON.stringify(expressErrorUtil.inspect(errors)));
+                .json(JSON.stringify(expressErrorUtil.inspect(errors)));
         }
         return false;
     }
 
-     /**
-     * Validate query parameters
-     *
-     * @param {Object} req - Request object
-     * @param {Object} res - Response object
-     * @param {Object} fields - Fields to be validated
-     * @returns {Boolean}
-     */
+    /**
+    * Validate query parameters
+    *
+    * @param {Object} req - Request object
+    * @param {Object} res - Response object
+    * @param {Object} fields - Fields to be validated
+    * @returns {Boolean}
+    */
     emptyParamsValidation(req, res, ...params) {
         for (let param of params) {
             req.checkParams(param).notEmpty();
@@ -55,7 +55,7 @@ class FieldValidator {
         const errors = req.validationErrors();
         if (errors) {
             return res.status(constants.RESPONSE_CODES.ERROR.BAD_REQUEST)
-              .json(JSON.stringify(expressErrorUtil.inspect(errors)));
+                .json(JSON.stringify(expressErrorUtil.inspect(errors)));
         }
         return false;
     }

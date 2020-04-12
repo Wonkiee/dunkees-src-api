@@ -6,7 +6,7 @@
  * @desc [Authentication service]
  */
 
-const JWT = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const safeJsonStringify = require('safe-json-stringify');
 
@@ -31,8 +31,8 @@ class AuthService extends BaseService {
     generateJWT(email) {
         try {
             const authenticationConfig = config.authentication;
-            const privateKey = fs.readFileSync('', 'utf8');
-            return JWT.sign({email: email}, privateKey/*authenticationConfig.jwt_secret*/, {
+            const privateKey = fs.readFileSync(config.authentication.private_key_path, 'utf8');
+            return jwt.sign({ email: email }, privateKey, {
                 algorithm: 'RS256',
                 expiresIn: authenticationConfig.jwt_expire_time * 60
             });

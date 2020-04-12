@@ -5,7 +5,7 @@
  * @desc [Create mongodb connection]
  */
 
-const mongoose =  require('mongoose');
+const mongoose = require('mongoose');
 
 const config = require('../../configurations');
 const dbConnectionStr = config.db.connection;
@@ -29,7 +29,7 @@ class DbManager {
                 useCreateIndex: true,
                 useFindAndModify: false,
                 useNewUrlParser: true,
-            }).then(()=> {
+            }).then(() => {
                 mongoose.set('objectIdGetter', false);
 
                 mongoose.connection.on('connected', function () {
