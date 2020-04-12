@@ -8,36 +8,21 @@
 
 const mongoose = require('mongoose');
 
-const usersSchema = new mongoose.Schema({
-    firstName: {
-        type: String,
-        required: true
-    },
-    lastName: {
-        type: String,
-        required: true
-    },
+const passwordResetSchema = new mongoose.Schema({
     email: {
         type: String,
-        required: true,
+        required: true
     },
-    password: {
+    token: {
         type: String,
-        required: true,
-    },
-    phone: {
-        type: String,
-        required: true,
-    },
-    isActive: {
-        type: Boolean,
+        required: true
     }
 }, {
-    collection: 'users',
+    collection: 'passwordReset',
     timestamps: {
         createdAt: 'created_at',
         updatedAt: 'updated_at'
     }
 });
 
-module.exports = mongoose.model('users', usersSchema);
+module.exports = mongoose.model('passwordReset', passwordResetSchema);

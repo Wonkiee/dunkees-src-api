@@ -18,6 +18,7 @@ class Logger {
      * @param {service} service - service used
     */
     configureLogger(service) {
+
         const transport = new (winston.transports.DailyRotateFile)({
             filename: config.logger.file_path,
             frequency: config.logger.frequency,

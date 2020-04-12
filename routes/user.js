@@ -8,8 +8,8 @@
 const express = require('express');
 const router = express.Router();
 
-const constants = require('../app/utils/constants');
 const userService = require('../app/services/userService');
+const passwordResetService = require('../app/services/passwordResetService');
 const fieldValidator = require('../app/utils/fieldValidator');
 const errorResponseHanlder = require('../app/utils/errorResponseHandler');
 
@@ -111,6 +111,32 @@ router.delete('/delete-user/', (req, res) => {
       return errorResponseHanlder.handleErrorResponse(res, locErr);
     }
     return res.json(userDeleteRes);
+  })
+});
+
+/**
+ * Send password reset email
+ */
+router.post('/password-reset-mail/', (req, res) => {
+
+  return passwordResetService.sendResetPasswordMail(req.body, (locErr, passResetMailRes) => {
+    if (locErr) {
+      return errorResponseHanlder.handleErrorResponse(res, locErr);
+    }
+    return res.json(passResetMailRes);
+  })
+});
+
+/**
+ * Reset password
+ */
+router.post('/password-reset/', (req, res) => {
+
+  return userService.resetPassword(req.body, (locErr, passResetRes) => {
+    if (locErr) {
+      return errorResponseHanlder.handleErrorResponse(res, locErr);
+    }
+    return res.json(passResetRes);
   })
 });
 

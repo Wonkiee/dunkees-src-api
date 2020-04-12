@@ -8,6 +8,7 @@
 const bcrypt = require('bcrypt');
 
 const BaseService = require('./baseService');
+const passwordResetService = require('./passwordResetService');
 const constants = require('../utils/constants');
 const userDao = require('../dao/userDao');
 const loggerModule = require('../utils/logger');
@@ -29,6 +30,7 @@ class UserService extends BaseService {
      * @param {Function} callback - Callback function
      */
     createUser(reqBody, callback) {
+
         if (!reqBody) {
             logger.error('Failed to create the user: required fields are empty');
             return callback({ code: constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING });
@@ -40,28 +42,33 @@ class UserService extends BaseService {
             phone: reqBody.phoneNumber,
             isActive: true
         }
-        const saltRounds = 10;
 
-        return bcrypt.genSalt(saltRounds, (err, salt) => {
-            if (err) {
-                logger.error(`Error in generating the password salt: ${JSON.stringify(err)}`);
-                return callback(err);
+        return this.retrieveUserByEmail(reqBody, (error, docs) => {
+
+            if (error) {
+                logger.error(`Error occurred in retrieving user by email when attempting to create user: ${JSON.stringify(error)}`);
+                return callback(error);
             }
-            return bcrypt.hash(reqBody.password, salt, (error, hashedPassword) => {
-                if (error) {
-                    logger.error(`Error in hashing the password: ${JSON.stringify(error)}`);
-                    return callback(error);
-                }
-                userDetails.password = hashedPassword;
-                return userDao.createUser(userDetails, (locErr, docs) => {
-                    if (locErr) {
-                        logger.error(`Error in creating user: ${JSON.stringify(locErr)}`);
-                        return callback(locErr);
+
+            if (docs === undefined || !docs) {
+                return this.hashPassword(reqBody.password, (err, hashedPassword) => {
+                    if (err) {
+                        logger.error(`Error in hashing password: ${JSON.stringify(err)}`);
+                        return callback(err);
                     }
-                    logger.info('Successfully created the user');
-                    return callback(null, docs);
+
+                    userDetails.password = hashedPassword;
+                    return userDao.createUser(userDetails, (locErr, docs) => {
+                        if (locErr) {
+                            logger.error(`Error in creating user: ${JSON.stringify(locErr)}`);
+                            return callback(locErr);
+                        }
+                        logger.info('Successfully created the user');
+                        return callback(null, docs);
+                    });
                 });
-            });
+            }
+            return callback({ code: constants.RESPONSE_CODES.ERROR.USER_EXISTS });
         });
     }
 
@@ -120,6 +127,7 @@ class UserService extends BaseService {
     * @param {Function} callback - Callback function
     */
     updateUserDetailsByEmail(reqBody, callback) {
+
         if (!reqBody || !reqBody.email) {
             logger.error('Failed to update the user: required fields are empty');
             return callback({ code: constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING });
@@ -147,6 +155,7 @@ class UserService extends BaseService {
     * @param {Function} callback - Callback function
     */
     updateUserEmailByExisitingEmail(reqBody, callback) {
+
         if (!reqBody || !reqBody.existingEmail || !reqBody.newEmail) {
             logger.error('Failed to update the user: required fields are empty');
             return callback({ code: constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING });
@@ -169,6 +178,7 @@ class UserService extends BaseService {
      * @param {Function} callback - Callback function
      */
     updateUserPhoneByEmail(reqBody, callback) {
+
         if (!reqBody || !reqBody.email || !reqBody.phoneNumber) {
             logger.error('Failed to update the user: required fields are empty');
             return callback({ code: constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING });
@@ -191,6 +201,7 @@ class UserService extends BaseService {
      * @param {Function} callback - Callback function
      */
     deleteUserByEmail(reqBody, callback) {
+
         if (!reqBody || !reqBody.email) {
             logger.error('Failed to delete the user: required fields are empty');
             return callback({ code: constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING });
@@ -213,6 +224,7 @@ class UserService extends BaseService {
     * @param {Function} callback - Callback function
     */
     loginUser(reqBody, callback) {
+
         if (!reqBody || !reqBody.email || !reqBody.password) {
             logger.error('Failed to login the user: required fields are empty');
             return callback({ code: constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING });
@@ -251,7 +263,8 @@ class UserService extends BaseService {
     * @param {Function} callback - Callback function
     */
     loginGuestUser(reqBody, callback) {
-        if (!reqBody || !reqBody.isGuest) {
+
+        if (!reqBody) {
             logger.error('Failed to login the user: required fields are empty');
             return callback({ code: constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING });
         }
@@ -263,12 +276,94 @@ class UserService extends BaseService {
     }
 
     /**
+    * Reset password
+    *
+    * @param {reqBody} reqBody - Request body
+    * @param {Function} callback - Callback function
+    */
+    resetPassword(reqBody, callback) {
+
+        if (this.isAnyFieldEmpty(reqBody)) {
+            logger.error('Failed to login the user: required fields are empty');
+            return callback({ code: constants.RESPONSE_CODES.ERROR.REQUIRED_FIELDS_MISSING });
+        }
+
+        const email = reqBody.email;
+        const password = reqBody.newPassword;
+
+        return passwordResetService.retrieveTokenDetailsByEmail(email, (err, docs) => {
+            if (err) {
+                logger.error(`Failed to retrieve token from db when resetting password for mail ${email}`);
+                return callback(err);
+            }
+            if (docs.token !== reqBody.token) {
+                logger.error(`Failed to reset password.Tokens does not match for the mail: ${email}`);
+                return callback(constants.RESPONSE_CODES.ERROR.UNAUTHORISED);
+            }
+
+            return this.hashPassword(password, (err, hashedPassword) => {
+                if (err) {
+                    logger.error(`Error in password hashing: ${JSON.stringify(err)}`);
+                    return callback(err);
+                }
+
+                return userDao.updatePasswordByEmail(email, hashedPassword, (locErr, docs) => {
+                    if (locErr) {
+                        logger.error(`Error in updating password for the user: ${JSON.stringify(locErr)}`);
+                        return callback(locErr);
+                    }
+                    logger.info(`Successfully updated the password for the user ${JSON.stringify(email)}`);
+                    return callback(null, docs._id);
+                });
+            });
+        });
+    }
+
+    /**
+    * Check for password reset function errors
+    *
+    * @param {Object} reqBody - Request body
+    * @param {Function} callback - Callback function
+    */
+    isAnyFieldEmpty(reqBody) {
+
+        if (!reqBody || !reqBody.email || !reqBody.token || !reqBody.newPassword) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+    * Hash a gicen password
+    *
+    * @param {String} password - Password
+    * @param {Function} callback - Callback function
+    */
+    hashPassword(password, callback) {
+
+        const saltRounds = 10;
+        return bcrypt.genSalt(saltRounds, (err, salt) => {
+            if (err) {
+                logger.error(`Error in generating the password salt: ${JSON.stringify(err)}`);
+                return callback(err);
+            }
+            return bcrypt.hash(password, salt, (error, hashedPassword) => {
+                if (error) {
+                    logger.error(`Error in hashing the password: ${JSON.stringify(error)}`);
+                    return callback(error);
+                }
+                return callback(null, hashedPassword);
+            });
+        });
+    }
+    /**
     * Delete null values from an object
     *
     * @param {Object} object - Object passed
     * @returns {Object}
     */
     deleteNullValues(object) {
+
         const tempObject = object;
         for (let key in tempObject) {
             if (!tempObject[key]) {

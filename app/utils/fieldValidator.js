@@ -21,6 +21,7 @@ class FieldValidator {
      * @returns {Boolean}
      */
     emptyFieldValidation(req, res, ...fields) {
+
         for (let field of fields) {
             let tempField = field;
             let items = tempField.split('.');
@@ -48,6 +49,7 @@ class FieldValidator {
     * @returns {Boolean}
     */
     emptyParamsValidation(req, res, ...params) {
+
         for (let param of params) {
             req.checkParams(param).notEmpty();
         }

@@ -29,6 +29,7 @@ class AuthService extends BaseService {
      * @returns {String} token - jwt token
      */
     generateJWT(email) {
+
         try {
             const authenticationConfig = config.authentication;
             const privateKey = fs.readFileSync(config.authentication.private_key_path, 'utf8');

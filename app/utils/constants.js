@@ -13,12 +13,15 @@ module.exports = {
             DB_CONNECTION: 'DATABASE CONNECTION',
             WWW: 'BIN/WWW',
             AUTH_SERVICE: 'AUTH SERVICE',
+            COMMUNICATOR_SERVICE: 'COMMUNICATOR SERVICE',
             APP: 'APP',
             MODELS: {
-                USER: 'USER MODEL'
+                USER: 'USER MODEL',
+                PASSWORD_RESET: 'PASSWORD RESET'
             },
             SERVICES: {
-                USER: 'USER SERVICE'
+                USER: 'USER SERVICE',
+                PASSWORD_RESET: 'PASSWORD RESET SERVICE'
             }
         },
         LOG_FILE_DATE_FORMAT: 'YYYY-MM-DD-HH',
@@ -49,6 +52,7 @@ module.exports = {
             //Custom Error Codes
             REQUIRED_FIELDS_MISSING: 100500,
             INCORRECT_CREDENTIALS: 100501,
+            USER_EXISTS: 100502
         }
     },
     HTTP_HEADER: {

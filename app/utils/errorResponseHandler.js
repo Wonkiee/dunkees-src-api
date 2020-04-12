@@ -16,6 +16,7 @@ class ErrorResponseHandler {
     }
 
     handleErrorResponse(res, err) {
+
         res.setHeader(constants.HTTP_HEADER.CONTENT_TYPE, constants.HTTP_HEADER.APPLICATION_JSON);
         if (err.code) {
             switch (err.code) {
@@ -24,6 +25,8 @@ class ErrorResponseHandler {
                 case constants.RESPONSE_CODES.ERROR.NOT_FOUND:
                     return res.sendStatus(constants.RESPONSE_CODES.ERROR.NOT_FOUND);
                 case constants.RESPONSE_CODES.ERROR.UNAUTHORISED:
+                    return res.sendStatus(constants.RESPONSE_CODES.ERROR.UNAUTHORISED);
+                case constants.RESPONSE_CODES.ERROR.USER_EXISTS:
                     return res.sendStatus(constants.RESPONSE_CODES.ERROR.UNAUTHORISED);
                 default:
                     return res.sendStatus(constants.RESPONSE_CODES.ERROR.INTERNAL_SERVER_ERROR);

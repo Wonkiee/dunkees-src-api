@@ -108,10 +108,6 @@ class UserDao {
     * @param {Function} callback - Callback function
     */
     updateUserEmailByExisitingEmail(existingEmail, newEmail, callback) {
-        if (!existingEmail) {
-            logger.error('Failed to update the user email: Email address is empty');
-            return callback(err);
-        }
 
         return userModel.findOneAndUpdate({ email: existingEmail }, { email: newEmail }, (err, doc) => {
             if (err) {
@@ -131,10 +127,6 @@ class UserDao {
      * @param {Function} callback - Callback function
      */
     updateUserPhoneByEmail(email, phoneNumber, callback) {
-        if (!email) {
-            logger.error('Failed to update the user by email: Email address is empty');
-            return callback(err);
-        }
 
         return userModel.findOneAndUpdate({ email: email }, { phone: phoneNumber }, (err, doc) => {
             if (err) {
@@ -153,10 +145,6 @@ class UserDao {
      * @param {Function} callback - Callback function
      */
     deleteUserByEmail(email, callback) {
-        if (!email) {
-            logger.error('Failed to delete the user by email: Email address is empty');
-            return callback(err);
-        }
 
         return userModel.deleteOne({
             email: email
@@ -166,6 +154,25 @@ class UserDao {
                 return callback(err);
             }
             logger.info(`Successfully deleted for the user email: ${email}`);
+            return callback(null, doc);
+        });
+    }
+
+    /**
+     * Update a user password by email
+     *
+     * @param {String} email - User email
+     * @param {String} password - Password of the user
+     * @param {Function} callback - Callback function
+     */
+    updatePasswordByEmail(email, password, callback) {
+
+        return userModel.findOneAndUpdate({ email: email }, { password: password }, (err, doc) => {
+            if (err) {
+                logger.error(`Failed to update the user password for user email: ${email}`);
+                return callback(err);
+            }
+            logger.info(`Successfully updated user password for the user email: ${email}`);
             return callback(null, doc);
         });
     }
