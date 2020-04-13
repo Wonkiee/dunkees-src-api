@@ -41,13 +41,13 @@ class CommunicationService extends BaseService {
                 from: config.communicator.email.from,
                 to: emailDetails.emailTo,
                 subject: emailDetails.subject,
-                text: emailDetails.emailBody,
+                html: emailDetails.emailBody,
             });
             logger.error(`Email wa sent to : ${emailDetails.emailTo}: ${info.messageId} ${nodemailer.getTestMessageUrl(info)}`)
             return callback(null);
         } catch (error) {
-            logger.error(`Error in sending mail to : ${emailDetails.emailTo} Mail Body: ${emailDetails.msgBody}`)
-            return callback(error);
+            logger.error(`Error in sending mail to : ${emailDetails.emailTo} Mail Body: ${emailDetails.msgBody} ${JSON.stringify(error)}`);
+            return callback({code: constants.RESPONSE_CODES.ERROR.EMAIL_SENDING_FAILURE});
         }
     }
 }
