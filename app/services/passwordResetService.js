@@ -6,8 +6,11 @@
  * @desc [PasswordResetService]
  */
 
+const ejs = require('ejs');
+
 const BaseService = require('./baseService');
 const communicatorService = require('./communicatorService');
+const attachmentService = require('./attachmentService');
 const constants = require('../utils/constants');
 const passwordResetDao = require('../dao/passwordResetDao');
 const loggerModule = require('../utils/logger');
@@ -101,16 +104,21 @@ class PasswordResetService extends BaseService {
     sendResetPasswordMail(reqBody, callback) {
 
         const token = utilFunctions.generateCustomToken();
+        const emailContent = attachmentService.generateContentBody(constants.FILE_NAMES.MAIL.PASSWORD_RESET_MAAIL, { token: token });
         const emailDetails = {
-            emailBody: token + " rajitha",
-            emailTo: 'rajithabrajasooriya@gmail.com',
-            subject: 'Hi'
+            emailBody: emailContent,
+            emailTo: reqBody.email,
+            subject: 'Hello'
+        };
+
+        if (!emailContent) {
+            return callback({ code: constants.RESPONSE_CODES.ERROR.EMAIL_SENDING_FAILURE });
         }
 
         return communicatorService.sendMail(emailDetails, (err) => {
             if (err) {
-                logger.error(`Failed to send the mail when resetting the password, Mail Body: ${JSON.stringify(emailDetails)}`);
-                return callback(err);
+                logger.error(`Failed to send the mail when resetting the password, Mail Body: ${JSON.stringify(emailDetails)} ${JSON.stringify(err)}`);
+                return callback({ code: constants.RESPONSE_CODES.ERROR.EMAIL_SENDING_FAILURE });
             }
 
             return this.upsertTokenWithEmail({
@@ -122,7 +130,7 @@ class PasswordResetService extends BaseService {
                     return callback(err);
                 }
                 logger.info('Successfuly updated the token details in db');
-                return callback(null, res._id);
+                return callback(null, true);
             });
         });
 

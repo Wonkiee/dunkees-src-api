@@ -21,7 +21,8 @@ module.exports = {
             },
             SERVICES: {
                 USER: 'USER SERVICE',
-                PASSWORD_RESET: 'PASSWORD RESET SERVICE'
+                PASSWORD_RESET: 'PASSWORD RESET SERVICE',
+                ATTACHMENT_SERVICE: 'ATTACHMENT SERVICE'
             }
         },
         LOG_FILE_DATE_FORMAT: 'YYYY-MM-DD-HH',
@@ -51,8 +52,18 @@ module.exports = {
 
             //Custom Error Codes
             REQUIRED_FIELDS_MISSING: 100500,
+            REQUIRED_FIELDS_MISSING_MSG: 'Required fields are missing',
             INCORRECT_CREDENTIALS: 100501,
-            USER_EXISTS: 100502
+            USER_EXISTS: 100502,
+            USER_EXISTS_MSG: 'User exists',
+            EMAIL_SENDING_FAILURE: 100503,
+            EMAIL_SENDING_FAILURE_MSG: 'Email sending failure',
+            USER_NOT_FOUND: 100504,
+            USER_NOT_FOUND_MSG: 'User not found',
+            TOKEN_MISMATCH: 100505,
+            TOKEN_MISMATCH_MSG: 'Invalid token',
+            TOKEN_EXPIRED: 100506,
+            TOKEN_EXPIRED_MSG: 'Token expired'
         }
     },
     HTTP_HEADER: {
@@ -75,6 +86,14 @@ module.exports = {
         }
     },
     JWT: {
-        EXCLUDED_PATHS: ['/api/user/create', '/api/login', '/api/health-check']
+        EXCLUDED_PATHS: ['/api/user/create', '/api/login', '/api/health-check', '/api/user/password-reset-mail', '/api/user/password-reset']
+    },
+    FILE_NAMES: {
+        MAIL: {
+            PASSWORD_RESET_MAAIL: 'passwordResetTemplate'
+        }
+    },
+    PASSWORD_RESET: {
+        EXPIRATION_HOURS: 2
     }
 }

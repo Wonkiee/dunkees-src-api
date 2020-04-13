@@ -6,6 +6,7 @@
  * @desc [User service which will call User Dao - This class deals with the User Collection data]
  */
 const bcrypt = require('bcrypt');
+const moment = require('moment');
 
 const BaseService = require('./baseService');
 const passwordResetService = require('./passwordResetService');
@@ -240,7 +241,7 @@ class UserService extends BaseService {
 
             if (!res || !res.password) {
                 logger.error(`No matched data found for the email: ${email}`);
-                return callback({ code: constants.RESPONSE_CODES.ERROR.UNAUTHORISED });
+                return callback({ code: constants.RESPONSE_CODES.ERROR.USER_NOT_FOUND });
             }
             return bcrypt.compare(password, res.password, (err, result) => {
                 if (err) {
@@ -296,9 +297,15 @@ class UserService extends BaseService {
                 logger.error(`Failed to retrieve token from db when resetting password for mail ${email}`);
                 return callback(err);
             }
-            if (docs.token !== reqBody.token) {
+
+            if (!this.isPasswordResetTokenValid(docs)) {
+                return callback({ code: constants.RESPONSE_CODES.ERROR.TOKEN_EXPIRED });
+            }
+            const isTokenMatch = (docs.token).toUpperCase() === (reqBody.token).toUpperCase();
+
+            if (!isTokenMatch) {
                 logger.error(`Failed to reset password.Tokens does not match for the mail: ${email}`);
-                return callback(constants.RESPONSE_CODES.ERROR.UNAUTHORISED);
+                return callback({ code: constants.RESPONSE_CODES.ERROR.TOKEN_MISMATCH });
             }
 
             return this.hashPassword(password, (err, hashedPassword) => {
@@ -313,7 +320,7 @@ class UserService extends BaseService {
                         return callback(locErr);
                     }
                     logger.info(`Successfully updated the password for the user ${JSON.stringify(email)}`);
-                    return callback(null, docs._id);
+                    return callback(null, true);
                 });
             });
         });
@@ -356,6 +363,7 @@ class UserService extends BaseService {
             });
         });
     }
+
     /**
     * Delete null values from an object
     *
@@ -371,6 +379,22 @@ class UserService extends BaseService {
             }
         }
         return tempObject;
+    }
+
+    /**
+    * Validate password reset token
+    *
+    * @param {Object} docs - Object retured from password reset collection
+    * @returns {Boolean}
+    */
+    isPasswordResetTokenValid(docs) {
+
+        const timeDiff = moment().diff(moment(docs.updated_at), 'hours');
+
+        if (timeDiff > constants.PASSWORD_RESET.EXPIRATION_HOURS) {
+            return false;
+        }
+        return true;
     }
 }
 

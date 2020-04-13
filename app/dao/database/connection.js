@@ -13,8 +13,6 @@ const constants = require('../../utils/constants');
 const loggerModule = require('../../utils/logger');
 const logger = new loggerModule().getLogger(constants.LOGGER_MODULE.SERVICE.SERVICE_INITIALLIZER);
 
-//require('../models/category');
-
 mongoose.Promise = global.Promise;
 
 class DbManager {
