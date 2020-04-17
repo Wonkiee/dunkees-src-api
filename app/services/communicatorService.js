@@ -47,7 +47,7 @@ class CommunicationService extends BaseService {
             return callback(null);
         } catch (error) {
             logger.error(`Error in sending mail to : ${emailDetails.emailTo} Mail Body: ${emailDetails.msgBody} ${JSON.stringify(error)}`);
-            return callback({code: constants.RESPONSE_CODES.ERROR.EMAIL_SENDING_FAILURE});
+            return callback({ code: constants.RESPONSE_CODES.ERROR.EMAIL_SENDING_FAILURE });
         }
     }
 }

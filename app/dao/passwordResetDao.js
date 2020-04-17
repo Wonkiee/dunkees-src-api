@@ -6,11 +6,10 @@
  * @desc [Password Reset Dao]
  */
 
-
 const constants = require('../utils/constants');
 const passwordResetModel = require('../dao/models/passwordReset');
 const loggerModule = require('../utils/logger');
-const logger = new loggerModule().getLogger(constants.LOGGER_MODULE.SERVICE.MODELS.PASSWORD_RESET);
+const logger = new loggerModule().getLogger(constants.LOGGER_MODULE.SERVICE.DAO.PASSWORD_RESET);
 
 class PasswordReset {
 
@@ -47,12 +46,20 @@ class PasswordReset {
     retrieveTokenDetailsByEmail(email, callback) {
 
         return passwordResetModel.findOne({
-            'email': email
+            email: email
         }).exec((err, docs) => {
             if (err) {
                 logger.error(`Error occurred in retrieving token details by email: ${JSON.stringify(err)}`);
                 return callback(err);
             }
+
+            if (!docs) {
+                logger.error('Record not found');
+                return callback({
+                    code: constants.RESPONSE_CODES.ERROR.RECORD_NOT_FOUND
+                });
+            }
+
             logger.info('Successfully retrieved the user');
             return callback(null, docs);
         });
@@ -70,7 +77,7 @@ class PasswordReset {
             email: email
         }, (err, doc) => {
             if (err) {
-                logger.error(`Failed to delete the token details for user email: ${email}`);
+                logger.error(`Failed to delete the token details for user email: ${email} Error: ${JSON.stringify(err)}`);
                 return callback(err);
             }
             logger.info(`Successfully deleted the token details for user email: ${email}`);

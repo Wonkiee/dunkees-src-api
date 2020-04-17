@@ -9,7 +9,7 @@
 const constants = require('../utils/constants');
 const userModel = require('../dao/models/userModel');
 const loggerModule = require('../utils/logger');
-const logger = new loggerModule().getLogger(constants.LOGGER_MODULE.SERVICE.MODELS.USER);
+const logger = new loggerModule().getLogger(constants.LOGGER_MODULE.SERVICE.DAO.USER);
 
 class UserDao {
 
@@ -46,7 +46,7 @@ class UserDao {
     retrieveUserByEmail(email, callback) {
 
         return userModel.findOne({
-            'email': email
+            email: email
         }).exec((err, docs) => {
             if (err) {
                 logger.error(`Error occurred in retrieving user by email: ${JSON.stringify(err)}`);
@@ -67,11 +67,18 @@ class UserDao {
     retrieveUserByPhoneNumber(phoneNumber, callback) {
 
         return userModel.findOne({
-            'phone': phoneNumber
+            phone: phoneNumber
         }).exec((err, docs) => {
             if (err) {
                 logger.error(`Error occurred in retrieving user by phone number: ${JSON.stringify(err)}`);
                 return callback(err);
+            }
+
+            if (!docs) {
+                logger.error('Record not found');
+                return callback({
+                    code: constants.RESPONSE_CODES.ERROR.RECORD_NOT_FOUND
+                });
             }
 
             logger.info('Successfully retrieved the user');
@@ -92,7 +99,7 @@ class UserDao {
             email: email
         }, userDetails, (err, doc) => {
             if (err) {
-                logger.error(`Failed to update the user details for user email: ${email}`);
+                logger.error(`Failed to update the user details for user email: ${email} Error: ${JSON.stringify(err)}`);
                 return callback(err);
             }
             logger.info(`Successfully updated user details for the user email: ${email}`);
@@ -111,7 +118,7 @@ class UserDao {
 
         return userModel.findOneAndUpdate({ email: existingEmail }, { email: newEmail }, (err, doc) => {
             if (err) {
-                logger.error(`Failed to update the user details for user email: ${newEmail}`);
+                logger.error(`Failed to update the user details for user email: ${newEmail} Error: ${JSON.stringify(err)}`);
                 return callback(err);
             }
             logger.info(`Successfully updated user details for the user email: ${newEmail}`);
@@ -130,7 +137,7 @@ class UserDao {
 
         return userModel.findOneAndUpdate({ email: email }, { phone: phoneNumber }, (err, doc) => {
             if (err) {
-                logger.error(`Failed to update the user phone number for user email: ${email}`);
+                logger.error(`Failed to update the user phone number for user email: ${email} Error: ${JSON.stringify(err)}`);
                 return callback(err);
             }
             logger.info(`Successfully updated user phone number for the user email: ${email}`);
@@ -150,7 +157,7 @@ class UserDao {
             email: email
         }, (err, doc) => {
             if (err) {
-                logger.error(`Failed to delete the user for user email: ${email}`);
+                logger.error(`Failed to delete the user for user email: ${email} Error: ${JSON.stringify(err)}`);
                 return callback(err);
             }
             logger.info(`Successfully deleted for the user email: ${email}`);
@@ -169,7 +176,7 @@ class UserDao {
 
         return userModel.findOneAndUpdate({ email: email }, { password: password }, (err, doc) => {
             if (err) {
-                logger.error(`Failed to update the user password for user email: ${email}`);
+                logger.error(`Failed to update the user password for user email: ${email} Error: ${JSON.stringify(err)}`);
                 return callback(err);
             }
             logger.info(`Successfully updated user password for the user email: ${email}`);
