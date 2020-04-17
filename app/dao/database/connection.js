@@ -27,6 +27,7 @@ class DbManager {
                 useCreateIndex: true,
                 useFindAndModify: false,
                 useNewUrlParser: true,
+                useUnifiedTopology: true
             }).then(() => {
                 mongoose.set('objectIdGetter', false);
 
