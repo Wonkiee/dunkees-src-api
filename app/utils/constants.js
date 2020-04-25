@@ -15,14 +15,18 @@ module.exports = {
             AUTH_SERVICE: 'AUTH SERVICE',
             COMMUNICATOR_SERVICE: 'COMMUNICATOR SERVICE',
             APP: 'APP',
-            MODELS: {
+            DAO: {
                 USER: 'USER MODEL',
-                PASSWORD_RESET: 'PASSWORD RESET'
+                PASSWORD_RESET: 'PASSWORD RESET',
+                ORDER_MODEL: 'ORDER MODEL',
+                ESTIMATION_MODEL: 'ESTIMATION MODEL'
             },
             SERVICES: {
                 USER: 'USER SERVICE',
                 PASSWORD_RESET: 'PASSWORD RESET SERVICE',
-                ATTACHMENT_SERVICE: 'ATTACHMENT SERVICE'
+                ATTACHMENT_SERVICE: 'ATTACHMENT SERVICE',
+                PAYMENT_SERVICE: 'PAYMENT SERVICE',
+                ORDER_SERVICE: 'ORDER SERVICE'
             }
         },
         LOG_FILE_DATE_FORMAT: 'YYYY-MM-DD-HH',
@@ -63,7 +67,11 @@ module.exports = {
             TOKEN_MISMATCH: 100505,
             TOKEN_MISMATCH_MSG: 'Invalid token',
             TOKEN_EXPIRED: 100506,
-            TOKEN_EXPIRED_MSG: 'Token expired'
+            TOKEN_EXPIRED_MSG: 'Token expired',
+            ORDER_ITEM_ERROR: 100507,
+            ORDER_LIST_EMPTY_MSG: 'Required order detail is missing',
+            RECORD_NOT_FOUND: 100508,
+            RECORD_NOT_FOUND_MSG: 'Record not found'
         }
     },
     HTTP_HEADER: {
@@ -95,5 +103,12 @@ module.exports = {
     },
     PASSWORD_RESET: {
         EXPIRATION_HOURS: 2
+    },
+    MONGO_COLLECTIONS: {
+        ESTIMATION: 'estimation'
+    },
+    STRING_CONSTANTS: {
+        EMAIL: 'email',
+        ID: 'id'
     }
 }

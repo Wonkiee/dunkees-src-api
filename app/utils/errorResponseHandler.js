@@ -65,6 +65,18 @@ class ErrorResponseHandler {
                         desc: constants.RESPONSE_CODES.ERROR.EMAIL_SENDING_FAILURE_MSG
                     });
 
+                case constants.RESPONSE_CODES.ERROR.ORDER_ITEM_ERROR:
+                    return res.status(constants.RESPONSE_CODES.ERROR.BAD_REQUEST).json({
+                        code: constants.RESPONSE_CODES.ERROR.ORDER_ITEM_ERROR,
+                        desc: constants.RESPONSE_CODES.ERROR.ORDER_LIST_EMPTY_MSG
+                    });
+
+                case constants.RESPONSE_CODES.ERROR.RECORD_NOT_FOUND:
+                    return res.status(constants.RESPONSE_CODES.ERROR.NOT_FOUND).json({
+                        code: constants.RESPONSE_CODES.ERROR.RECORD_NOT_FOUND,
+                        desc: constants.RESPONSE_CODES.ERROR.RECORD_NOT_FOUND_MSG
+                    });
+
                 default:
                     return res.sendStatus(constants.RESPONSE_CODES.ERROR.INTERNAL_SERVER_ERROR);
             }

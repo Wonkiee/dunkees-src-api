@@ -6,7 +6,7 @@
  * @desc [Utility functions]
  */
 
- const shortid = require('shortid');
+const shortid = require('shortid');
 
 class Functions {
 

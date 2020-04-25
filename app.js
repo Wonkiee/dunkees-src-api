@@ -23,8 +23,17 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/user');
 const loginRoute = require('./routes/login');
 const healthRoute = require('./routes/health');
+const orderRoute = require('./routes/order');
 
 var app = express();
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, Content-Length, X-Requested-With, apiFlowStatus');
+  next();
+});
+
 app.use(expressValidator());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -61,6 +70,7 @@ app.use((err, req, res, next) => {
 app.use('/api/login', loginRoute);
 app.use('/api/health-check', healthRoute);
 app.use('/api/user', usersRouter);
+app.use('/api/order', orderRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
