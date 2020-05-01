@@ -94,7 +94,7 @@ module.exports = {
         }
     },
     JWT: {
-        EXCLUDED_PATHS: ['/api/user/create', '/api/login', '/api/health-check', '/api/user/password-reset-mail', '/api/user/password-reset']
+        EXCLUDED_PATHS: ['/api/user/create', '/api/login', '/api/login/guest-user', '/api/health-check', '/api/user/password-reset-mail', '/api/user/password-reset']
     },
     FILE_NAMES: {
         MAIL: {
